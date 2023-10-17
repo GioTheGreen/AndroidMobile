@@ -31,9 +31,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d("MainActivity", "Button pressed");
         Intent intent = new Intent(this,DisplayAcitivity.class);
         String name = editText.getText().toString();
-        if (name == null)
+        if (name.length() == 0)
             return;
         intent.putExtra(KEY, name);
         startActivity(intent);
+        Log.d("MainActivity", "after");
     }
 }
