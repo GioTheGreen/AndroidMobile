@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static String KEY = "MY KEY";
     EditText editText;
     Button button;
+    Button play;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,19 +23,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         editText = findViewById(R.id.editTextText);
         button = findViewById(R.id.button);
-
         button.setOnClickListener(this);
+        play = findViewById(R.id.button2);
+        play.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
         Log.d("MainActivity", "Button pressed");
-        Intent intent = new Intent(this,DisplayAcitivity.class);
-        String name = editText.getText().toString();
-        if (name.length() == 0)
-            return;
-        intent.putExtra(KEY, name);
-        startActivity(intent);
+        int id = view.getId();
+        if (id == R.id.button){
+            Intent intent = new Intent(this,DisplayAcitivity.class);
+            String name = editText.getText().toString();
+            if (name.length() == 0)
+                return;
+            intent.putExtra(KEY, name);
+            startActivity(intent);
+        } else if (id == R.id.button2) {
+            Intent intent = new Intent(this, GameLayout.class);
+            startActivity(intent);
+        }
         Log.d("MainActivity", "after");
     }
 }
