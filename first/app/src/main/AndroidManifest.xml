@@ -13,6 +13,9 @@
         android:theme="@style/Theme.SakithsLookAtAndraid"
         tools:targetApi="31">
         <activity
+            android:name=".GameLayout"
+            android:exported="false" />
+        <activity
             android:name=".DisplayAcitivity"
             android:exported="false" />
         <activity

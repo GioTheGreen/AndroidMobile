@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         editText = findViewById(R.id.editTextText);
-        button = findViewById(R.id.button);
+        button = findViewById(R.id.pauseB);
         button.setOnClickListener(this);
         play = findViewById(R.id.button2);
         play.setOnClickListener(this);
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         Log.d("MainActivity", "Button pressed");
         int id = view.getId();
-        if (id == R.id.button){
+        if (id == R.id.pauseB){
             Intent intent = new Intent(this,DisplayAcitivity.class);
             String name = editText.getText().toString();
             if (name.length() == 0)

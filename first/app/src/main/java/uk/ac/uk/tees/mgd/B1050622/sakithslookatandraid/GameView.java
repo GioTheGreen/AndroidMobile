@@ -15,7 +15,7 @@ import android.view.SurfaceView;
 
 public class GameView extends SurfaceView implements Runnable {
 
-    private Thread gameThread;
+    //private Thread gameThread;
     private SurfaceHolder surfaceHolder;
     private volatile boolean playing;
     private Canvas canvas;
@@ -43,10 +43,10 @@ public class GameView extends SurfaceView implements Runnable {
 
     @Override
     public void run() {
-        while (playing)
-        {
-
-        }
+        //while (playing)
+        //{
+        draw();
+        //}
     }
 
     private void update() {
@@ -59,33 +59,35 @@ public class GameView extends SurfaceView implements Runnable {
         if (surfaceHolder.getSurface().isValid())
         {
             canvas = surfaceHolder.lockCanvas();
-            canvas.drawColor(Color.GREEN);
+            canvas.drawColor(Color.WHITE);
+
             surfaceHolder.unlockCanvasAndPost(canvas);
         }
     }
 
-    public void pause()
-    {
-        playing = false;
-        try {
-            gameThread.join();
-        } catch (InterruptedException e) {
-            Log.e("GameView", "Interrupted");
-        }
-    }
+    //public void pause()
+    //{
+       // playing = false;
+        //try {
+            //gameThread.join();
+        //} catch (InterruptedException e) {
+            //Log.e("GameView", "Interrupted");
+        //}
+    //}
 
-    public void resume()
-    {
-        playing = true;
-        gameThread = new Thread(this);
-        gameThread.start();
-    }
+    //public void resume()
+    //{
+       // playing = true;
+        //gameThread = new Thread(this);
+        //gameThread.start();
+    //}
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN :
                 isMoving = !isMoving;
+                Log.d("GameLayout", "" + isMoving);
                 break;
         }
         return true;

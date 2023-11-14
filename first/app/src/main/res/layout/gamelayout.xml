@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".GameLayout">
 
     <uk.ac.uk.tees.mgd.B1050622.sakithslookatandraid.GameView
         android:id="@+id/gameView"
@@ -15,7 +16,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/pauseB"
         android:layout_width="201dp"
         android:layout_height="51dp"
         android:layout_marginTop="16dp"

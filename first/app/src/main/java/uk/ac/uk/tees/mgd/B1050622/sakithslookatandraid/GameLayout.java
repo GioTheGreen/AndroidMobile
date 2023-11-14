@@ -5,18 +5,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 public class GameLayout extends AppCompatActivity implements View.OnClickListener {
 
     Button button;
+    GameView gameView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gamelayout);
 
-        button = findViewById(R.id.button);
+        gameView = findViewById(R.id.gameView);
+        gameView.run();
+        button = findViewById(R.id.pauseB);
 
         button.setOnClickListener(this);
     }
