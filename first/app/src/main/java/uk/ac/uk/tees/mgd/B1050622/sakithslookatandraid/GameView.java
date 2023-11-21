@@ -36,7 +36,7 @@ public class GameView extends SurfaceView implements Runnable {
     public GameView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         surfaceHolder = getHolder();
-        //bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.run);
+        bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.run);
         //bitmap = Bitmap.createScaledBitmap(bitmap, frameW * frameCount, frameH, false);
     }
 
