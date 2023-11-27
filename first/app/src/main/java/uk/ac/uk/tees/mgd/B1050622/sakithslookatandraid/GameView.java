@@ -5,10 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Rect;
-import android.graphics.RectF;
+import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -18,7 +16,7 @@ public class GameView extends SurfaceView implements Runnable {
 
     public GameView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
-
+        new Anim().start();
     }
 
     private class Anim extends Thread{
@@ -29,17 +27,49 @@ public class GameView extends SurfaceView implements Runnable {
             long LastFrameTime=0;
             long Delay =100;
             int spriteIDs[]={
-                    //R.drawable.demoP
+                    R.drawable.demo
             };
+
+            while(true){
+                if (playing){
+                    long CurrentFrameTime = System.currentTimeMillis();
+                    if (CurrentFrameTime > LastFrameTime + Delay)
+                    {
+                        if (counter >= spriteIDs.length)
+                        {
+                            counter = 0;
+                        }
+                        draw(spriteIDs[counter]);
+                        LastFrameTime = CurrentFrameTime;
+                        counter++;
+                    }
+                }
+            }
         }
+
+        private void draw(int sprite){
+            SurfaceHolder holder = (SurfaceHolder) getHandler();
+            Canvas canvas = holder.lockCanvas();
+            if(canvas != null){
+                canvas.drawColor(Color.WHITE);
+                Paint paint = new Paint();
+                Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),sprite);
+                canvas.drawBitmap(bitmap,100,100,paint);
+                holder.unlockCanvasAndPost(canvas);
+            }
+
+        };
+
+
     }
 
     @Override
     public void run() {
+        return;
     }
 
     private void GameUpdate() {
-
+        return;
     }
 
 
