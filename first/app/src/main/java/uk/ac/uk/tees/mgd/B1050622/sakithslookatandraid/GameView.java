@@ -7,44 +7,33 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 public class GameView extends SurfaceView implements Runnable {
-    private boolean playing = true;
-
+    boolean playing = true;
+    private boolean paused = false;
+    long LastFrameTime=0;
+    long Delay =100;
+    Anim anim = new Anim();
     public GameView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
-        new Anim().start();
+        Log.d("gameview", "create");
+        anim.start();
     }
 
     private class Anim extends Thread{
         int counter = 0;
-
+        int spriteIDs[]={
+                R.drawable.demo,
+                R.drawable.demo,
+                R.drawable.demo
+        };
         @Override
         public void run() {
-            long LastFrameTime=0;
-            long Delay =100;
-            int spriteIDs[]={
-                    R.drawable.demo
-            };
-
-            while(true){
-                if (playing){
-                    long CurrentFrameTime = System.currentTimeMillis();
-                    if (CurrentFrameTime > LastFrameTime + Delay)
-                    {
-                        if (counter >= spriteIDs.length)
-                        {
-                            counter = 0;
-                        }
-                        draw(spriteIDs[counter]);
-                        LastFrameTime = CurrentFrameTime;
-                        counter++;
-                    }
-                }
-            }
+            draw(spriteIDs[counter]);
         }
 
         private void draw(int sprite){
@@ -58,30 +47,45 @@ public class GameView extends SurfaceView implements Runnable {
                 holder.unlockCanvasAndPost(canvas);
             }
 
-        };
-
-
+        }
+        private void incromentCounter(){
+            if (counter >= spriteIDs.length)
+            {
+                counter = 0;
+            }
+            counter++;
+        }
     }
 
     @Override
     public void run() {
-        return;
+        Log.d("GameView", "run");
+        while (playing) {
+            long CurrentFrameTime = System.currentTimeMillis();
+            if (CurrentFrameTime > LastFrameTime + Delay) {
+                LastFrameTime = CurrentFrameTime;
+                //incrimint all sprites at once
+                anim.incromentCounter();
+            }
+        }
+    }
+    public void pause(){
+        paused = !paused;
     }
 
     private void GameUpdate() {
-        return;
+
     }
 
 
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        //switch (event.getAction() & MotionEvent.ACTION_MASK) {
-        //    case MotionEvent.ACTION_DOWN :
-        //        isMoving = !isMoving;
-        //        Log.d("GameLayout", "" + isMoving);
-        //        break;
-        //}
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN :
+                playing = !playing;
+                break;
+        }
         return true;
     }
 }

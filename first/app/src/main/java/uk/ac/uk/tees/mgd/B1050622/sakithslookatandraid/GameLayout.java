@@ -26,6 +26,10 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
     @Override
     public void onClick(View view) {
         // terinate sidplay activity
+        int id = view.getId();
+        if (id == R.id.pauseB){
+            gameView.pause();
+        }
         finish();
     }
 }
