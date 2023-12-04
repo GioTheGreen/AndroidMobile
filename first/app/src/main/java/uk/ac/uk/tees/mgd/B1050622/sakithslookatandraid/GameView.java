@@ -13,79 +13,58 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 public class GameView extends SurfaceView implements Runnable {
-    boolean playing = true;
     private boolean paused = false;
     long LastFrameTime=0;
     long Delay =100;
-    Anim anim = new Anim();
+
+    SurfaceHolder holder = getHolder();
+    Bitmap bitmap = Bitmap.createBitmap(getWidth(),getHeight(), Bitmap.Config.ARGB_8888);
+    Canvas canvas;// = new Canvas(bitmap);// = holder.lockCanvas();
+
     public GameView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         Log.d("gameview", "create");
-        anim.start();
     }
+    public void draw(Animation a){
+        Log.d("gameview", "test");
+        //canvas = holder.lockCanvas();           //cant lock but have to lock????
+        Log.d("gameview", "test2");
+        if(canvas != null){
+            Log.d("gameview", "test3");
+            canvas.drawColor(Color.WHITE);
+            Log.d("gameview", "test4");
+            Paint paint = new Paint();
+            Log.d("gameview", "test5");
+            Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(),a.spriteIDs[a.counter]);
+            Log.d("gameview", "test6");
+            canvas.drawBitmap(sprite,a.posx,a.posy,paint);
+            Log.d("gameview", "test7");
+            //holder.unlockCanvasAndPost(canvas);
 
-    private class Anim extends Thread{
-        int counter = 0;
-        int spriteIDs[]={
-                R.drawable.demo,
-                R.drawable.demo,
-                R.drawable.demo
-        };
-        @Override
-        public void run() {
-            draw(spriteIDs[counter]);
+            Log.d("gameview", "test8");
         }
 
-        private void draw(int sprite){
-            SurfaceHolder holder = (SurfaceHolder) getHandler();
-            Canvas canvas = holder.lockCanvas();
-            if(canvas != null){
-                canvas.drawColor(Color.WHITE);
-                Paint paint = new Paint();
-                Bitmap bitmap = BitmapFactory.decodeResource(getContext().getResources(),sprite);
-                canvas.drawBitmap(bitmap,100,100,paint);
-                holder.unlockCanvasAndPost(canvas);
-            }
-
-        }
-        private void incromentCounter(){
-            if (counter >= spriteIDs.length)
-            {
-                counter = 0;
-            }
-            counter++;
-        }
     }
-
     @Override
     public void run() {
         Log.d("GameView", "run");
-        while (playing) {
-            long CurrentFrameTime = System.currentTimeMillis();
-            if (CurrentFrameTime > LastFrameTime + Delay) {
-                LastFrameTime = CurrentFrameTime;
-                //incrimint all sprites at once
-                anim.incromentCounter();
-            }
-        }
+
     }
-    public void pause(){
+
+    public void pause()
+    {
         paused = !paused;
     }
 
-    private void GameUpdate() {
-
-    }
 
 
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch (event.getAction() & MotionEvent.ACTION_MASK) {
-            case MotionEvent.ACTION_DOWN :
-                playing = !playing;
-                break;
-        }
-        return true;
-    }
+    //@Override
+    //public boolean onTouchEvent(MotionEvent event) {
+    //    switch (event.getAction() & MotionEvent.ACTION_MASK) {
+    //        case MotionEvent.ACTION_DOWN :
+    //            playing = !playing;
+    //            break;
+    //    }
+    //    return true;
+    //}
 }
