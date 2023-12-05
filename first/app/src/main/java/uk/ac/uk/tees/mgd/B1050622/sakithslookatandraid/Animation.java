@@ -22,10 +22,9 @@ public class Animation {
 
     public void next()
     {
-        if (counter >= spriteIDs.length)
-        {
+        counter++;
+        if (counter >= spriteIDs.length) {
             counter = 0;
         }
-        counter++;
     };
 }
