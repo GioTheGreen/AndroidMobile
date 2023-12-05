@@ -1,45 +1,49 @@
 package uk.ac.uk.tees.mgd.B1050622.sakithslookatandraid;
 
+import static android.content.Context.SENSOR_SERVICE;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-public class GameView extends SurfaceView implements Runnable {
+public class GameView extends SurfaceView implements Runnable, SensorEventListener {
     private volatile boolean paused = false;
-    long LastFrameTime=0;
-    long Delay =100;
+    private long LastFrameTime=0;
+    private long Delay =100;
 
-    SurfaceHolder holder;// = getHolder();
-    Bitmap bitmap;// = Bitmap.createBitmap(getWidth(),getHeight(), Bitmap.Config.ARGB_8888);
-    Canvas canvas;// = new Canvas(bitmap);// = holder.lockCanvas();
+    private SurfaceHolder holder;// = getHolder();
+    private Bitmap bitmap;// = Bitmap.createBitmap(getWidth(),getHeight(), Bitmap.Config.ARGB_8888);
+    private Canvas canvas;// = new Canvas(bitmap);// = holder.lockCanvas();
 
-    int piratid[]={
+    private SensorManager manager;
+    private Sensor sensor;
+
+    private int piratid[]={
             R.drawable.demo,
             R.drawable.demo,
             R.drawable.demo
     };
-    int woodid[]={
+    private int woodid[]={
     };
-    int coinid[]={
+    private int coinid[]={
     };
-    int bulletPid[]={
-    };
-    int woodid[]={
-    };
-    int woodid[]={
-    };
-    int woodid[]={
+    private int bulletPid[]={
     };
 
-    Animation animations[] =
+
+    private Animation animations[] =
             {
                     new Animation(piratid, 100, 100)
             };
@@ -49,27 +53,21 @@ public class GameView extends SurfaceView implements Runnable {
         super(context, attributeSet);
         Log.d("gameview", "create");
         holder = getHolder();
+
+        manager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
+        sensor = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        manager.registerListener(GameView.this,sensor,manager.SENSOR_DELAY_NORMAL);
     }
     public void draw(Animation a){
-        Log.d("gameview", "test");
-        //canvas = holder.lockCanvas();           //cant lock but have to lock????
-        Log.d("gameview", "test2");
         if (holder.getSurface().isValid()) {
             canvas = holder.lockCanvas();
             bitmap = Bitmap.createBitmap(getWidth(),getHeight(), Bitmap.Config.ARGB_8888);
             if (canvas != null) {
-                Log.d("gameview", "test3");
                 canvas.drawColor(Color.GREEN);
-                Log.d("gameview", "test4");
                 Paint paint = new Paint();
-                Log.d("gameview", "test5");
                 Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(), a.spriteIDs[a.counter]);
-                Log.d("gameview", "test6");
                 canvas.drawBitmap(sprite, a.posx, a.posy, paint);
-                Log.d("gameview", "test7");
                 holder.unlockCanvasAndPost(canvas);
-
-                Log.d("gameview", "test8");
             }
         }
     }
@@ -78,7 +76,7 @@ public class GameView extends SurfaceView implements Runnable {
         Log.d("GameView", "run");
         while(!paused)
         {
-            // Framerate
+            // Framerate for animations
             long CurrentFrameTime = System.currentTimeMillis();
             if (CurrentFrameTime > LastFrameTime + Delay) {
                 LastFrameTime = CurrentFrameTime;
@@ -90,9 +88,7 @@ public class GameView extends SurfaceView implements Runnable {
             }
             for (Animation a: animations)
             {
-                Log.d("layout", "made");
                 draw(a);
-                Log.d("layout", "made2");
             }
 //            update();
         }
@@ -115,6 +111,16 @@ public class GameView extends SurfaceView implements Runnable {
         paused = false;
         thread = new Thread(this);
         thread.start();
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
     }
 
 
