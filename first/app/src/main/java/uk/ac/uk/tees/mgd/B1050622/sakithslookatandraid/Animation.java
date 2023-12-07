@@ -1,10 +1,10 @@
 package uk.ac.uk.tees.mgd.B1050622.sakithslookatandraid;
 
 public class Animation {
-    int counter = 0;
-    int posx = 100;
-    int posy = 100;
-    int spriteIDs[]={
+    public int counter = 0;
+    public int posx = 100;
+    public int posy = 100;
+    public int spriteIDs[]={
             R.drawable.demo,
             R.drawable.demo,
             R.drawable.demo

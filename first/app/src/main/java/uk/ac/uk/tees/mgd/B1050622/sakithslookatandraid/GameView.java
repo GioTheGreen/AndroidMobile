@@ -18,35 +18,31 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.Vector;
+
 public class GameView extends SurfaceView implements Runnable, SensorEventListener {
     private volatile boolean paused = false;
     private long LastFrameTime=0;
-    private long Delay =100;
-
-    private SurfaceHolder holder;// = getHolder();
+    private final long Delay =100;
+    private float dir = 3;
+    private final SurfaceHolder holder;// = getHolder();
     private Bitmap bitmap;// = Bitmap.createBitmap(getWidth(),getHeight(), Bitmap.Config.ARGB_8888);
     private Canvas canvas;// = new Canvas(bitmap);// = holder.lockCanvas();
 
-    private SensorManager manager;
-    private Sensor sensor;
+    private final SensorManager manager;
+    private final Sensor sensor;
 
-    private int piratid[]={
+    private final int[] piratid ={
             R.drawable.demo,
             R.drawable.demo,
             R.drawable.demo
     };
-    private int woodid[]={
-    };
-    private int coinid[]={
-    };
-    private int bulletPid[]={
-    };
 
-
-    private Animation animations[] =
-            {
-                    new Animation(piratid, 100, 100)
-            };
+    //private Animation[] animations =
+    //        {
+    //                new Animation(piratid, -75, 1000)
+    //        };
+    private Vector<Animation> animations = new Vector<Animation>();
     private Thread thread;
 
     public GameView(Context context, AttributeSet attributeSet) {
@@ -56,7 +52,9 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
 
         manager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
         sensor = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        manager.registerListener(GameView.this,sensor,manager.SENSOR_DELAY_NORMAL);
+        manager.registerListener(GameView.this,sensor,manager.SENSOR_DELAY_GAME);
+
+        animations.addElement( new Animation(piratid, -75, 1000));
     }
     public void draw(Animation a){
         if (holder.getSurface().isValid()) {
@@ -90,7 +88,16 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             {
                 draw(a);
             }
-//            update();
+            //update
+            animations.firstElement().posx+= dir;
+            if (animations.firstElement().posx > getWidth())
+            {
+                animations.firstElement().posx = -75;
+            } else if (animations.firstElement().posx < -75) {
+                animations.firstElement().posx = getWidth();
+            }
+            dir = 0;
+
         }
         Log.d("GameView", "Stopping thread");
     }
@@ -115,7 +122,10 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-
+        if (Math.abs(event.values[1]) > 0.3) //not 0.1, 0.2, 0.5, 0.4, 0.25
+        {
+            dir =-10 * Math.max(Math.min((event.values[1] - 0.3f), 5),-5); // 5 seems like a good max speed
+        }
     }
 
     @Override
@@ -124,13 +134,13 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     }
 
 
-    //@Override
-    //public boolean onTouchEvent(MotionEvent event) {
-    //    switch (event.getAction() & MotionEvent.ACTION_MASK) {
-    //        case MotionEvent.ACTION_DOWN :
-    //            playing = !playing;
-    //            break;
-    //    }
-    //    return true;
-    //}
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction() & MotionEvent.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN :
+                Log.d("GameView","a");
+                break;
+        }
+        return true;
+    }
 }
