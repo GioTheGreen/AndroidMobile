@@ -1,15 +1,16 @@
 package uk.ac.uk.tees.mgd.B1050622.sakithslookatandraid;
 
 public class Animation {
-    public int counter = 0;
-    public int posx = 100;
-    public int posy = 100;
-    public int spriteIDs[]={
-            R.drawable.demo,
-            R.drawable.demo,
+    private int counter = 0;
+    private int posx = 0;
+    private int posy = 0;
+
+    private int preposx = 0;
+    private int preposy = 0;
+    private int[] spriteIDs={
             R.drawable.demo
     };
-    public Animation(int a[], int x, int y)
+    public Animation(int[] a, int x, int y)
     {
         spriteIDs = a;
         posx = x;
@@ -27,4 +28,13 @@ public class Animation {
             counter = 0;
         }
     };
+    public void setPos(int x, int y)
+    {
+        preposx = getPosx();
+        preposy = getPosy();
+        posx = x;
+        posy = y;
+    }
+    public int getPosx(){return posx;}
+    public int getPosy(){return posy;}
 }
