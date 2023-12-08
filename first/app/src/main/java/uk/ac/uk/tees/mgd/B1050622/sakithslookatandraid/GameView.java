@@ -20,7 +20,6 @@ import android.view.SurfaceView;
 
 import java.util.Vector;
 
-import kotlin.collections.FloatIterator;
 
 public class GameView extends SurfaceView implements Runnable, SensorEventListener {
     private volatile boolean paused = false;
@@ -44,14 +43,23 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             R.drawable.demo,
             R.drawable.demo
     };
-
-    //private Animation[] animations =
-    //        {
-    //                new Animation(piratid, -75, 1000)
-    //        };
+    private final int[] Platform ={
+            R.drawable.platform1
+    };
     private Vector<Animation> animations = new Vector<Animation>(0);
     private Thread thread;
-
+    private void addAnimation(int[] spriteSet,int x, int y)
+    {
+        Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(), spriteSet[0]);
+        animations.addElement( new Animation(spriteSet, x, y, sprite.getWidth(),sprite.getHeight(), false));
+    }
+    private void removeAnimation()
+    {
+        if (animations.capacity() > 1)
+        {
+            animations.remove(1);
+        }
+    }
     public GameView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         Log.d("gameview", "create");
@@ -61,7 +69,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         sensor = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         manager.registerListener(GameView.this,sensor,manager.SENSOR_DELAY_GAME);
 
-        animations.addElement( new Animation(piratid, 400, 1000));
+        addAnimation(piratid, 400, 1000);
     }
     public void draw(Animation a){
         if (holder.getSurface().isValid()) {
@@ -71,7 +79,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 canvas.drawColor(Color.GREEN);
                 Paint paint = new Paint();
                 Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(), a.getCurrent());
-                canvas.drawBitmap(sprite, a.getPosx(), a.getPosy(), paint);
+                canvas.drawBitmap(sprite, a.getPosx(), a.getPosy() - offset, paint);
                 holder.unlockCanvasAndPost(canvas);
             }
         }
@@ -85,15 +93,10 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             long CurrentFrameTime = System.currentTimeMillis();
             if (CurrentFrameTime > LastFrameTime + Delay) {
                 LastFrameTime = CurrentFrameTime;
-
                 for (Animation a: animations)
                 {
                     a.next();
                 }
-            }
-            for (Animation a: animations)
-            {
-                draw(a);
             }
             //update game loop
             if (playing)
@@ -107,13 +110,20 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 }
                 float nextY = animations.firstElement().getPosy() + velocity;
                 float nextX = animations.firstElement().getPosx() + dir;
-                animations.firstElement().setPos((int) nextX, (int) nextY);
-                if (animations.firstElement().getPosx() > getWidth()) {
-                    animations.firstElement().setPos(-75, animations.firstElement().getPosy());
-                } else if (animations.firstElement().getPosx() < -75) {
-                    animations.firstElement().setPos(getWidth(), animations.firstElement().getPosy());
+                if (nextX > getWidth()) {
+                    nextX=-75;
+                } else if (nextX < -75) {
+                    nextX= getWidth();
                 }
+                //
+                //check colliton here
+                //
+                animations.firstElement().setPos((int) nextX, (int) nextY);
                 dir = 0;// very needed
+            }
+            for (Animation a: animations)
+            {
+                draw(a);
             }
         }
         Log.d("GameView", "Stopping thread");
@@ -141,9 +151,9 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (Math.abs(event.values[1]) > 0.3) //not 0.1, 0.2, 0.5, 0.4, 0.25
+        if (Math.abs(event.values[1]) > 0.3f) //not 0.1, 0.2, 0.5, 0.4, 0.25...  0.3 is right
         {
-            dir =-10 * Math.max(Math.min((event.values[1] - 0.3f), maxXSpeed),-maxXSpeed); // 5 seems like a good max speed
+            dir =-10 * Math.max(Math.min((event.values[1]), maxXSpeed),-maxXSpeed); // 5 seems like a good max speed
         }
     }
 
