@@ -72,7 +72,7 @@ public class Animation {
         }
         else
         {
-            setPos((int)nextX,(int)nextY);
+            //setPos((int)nextX,(int)nextY);  <- this, this line right here has coursed me nothing but grief
             return false;
         }
     }

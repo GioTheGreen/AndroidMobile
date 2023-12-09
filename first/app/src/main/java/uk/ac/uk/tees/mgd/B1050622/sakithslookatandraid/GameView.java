@@ -103,7 +103,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         Random random = new Random();
         for (int i = 0; i < 5; i++)
         {
-            int nextspace = random.nextInt(24) + 3; //23 is the max player can go reliability, 3 so platforms aren't connected
+            int nextspace = random.nextInt(21) + 3; //23 is the max player can go reliability, 3 so platforms aren't connected
             addAnimation(platform,(int)lastSpwanX,((int)lastSpwanY - (nextspace * step)));
         }
     }
@@ -159,11 +159,17 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                     nextX= getWidth();
                 }
                 // ckeck land colltion
+                boolean land = false;
                 for (int i = 1; i < animations.size(); i++) //start from 1 to skip player
                 {
                     if (animations.firstElement().doesLand(animations.elementAt(i), nextX, nextY)) {
                         velocity = -80;
+                        land = true;
                     }
+                }
+                if (!land)
+                {
+                    animations.firstElement().setPos((int)nextX,(int)nextY);
                 }
                 dir = 0;// reset motion controls
                 if ((animations.firstElement().getPosy() + offset < (getHeight()/4)) && velocity < 0)// offset calc
