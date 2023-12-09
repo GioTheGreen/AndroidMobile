@@ -18,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.Random;
 import java.util.Vector;
 
 
@@ -26,6 +27,10 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     private boolean playing = false;
     private long LastFrameTime = 0;
     private final long Delay =100;
+    private float lastSpwanX = 0;
+    private float lastSpwanY = 0;
+    private boolean lastSpwanType = false;
+    private int maxSpawnCap = 1;
     private float dir = 0;//for motion controls
     private final float acceleration = 3;
     private float velocity = -80;
@@ -43,7 +48,13 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             R.drawable.demo,
             R.drawable.demo
     };
-    private final int[] Platform ={
+    private final int[] platform ={
+            R.drawable.platform1
+    };
+    private final int[] enemy1 ={
+            R.drawable.platform1
+    };
+    private final int[] enemy2 ={
             R.drawable.platform1
     };
     private Vector<Animation> animations = new Vector<Animation>(0);
@@ -52,6 +63,20 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     {
         Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(), spriteSet[0]);
         animations.addElement( new Animation(spriteSet, x, y, sprite.getWidth(),sprite.getHeight(), false));
+        lastSpwanX = x;
+        lastSpwanY = y;
+    }
+    private void addEnemyAnimation(boolean type, int x, int y )
+    {
+        int[] spriteSet = enemy1;
+        if (type)
+        {
+            spriteSet = enemy2;
+        }
+        Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(), spriteSet[0]);
+        animations.addElement( new Animation(spriteSet, x, y, sprite.getWidth(),sprite.getHeight(), true));
+        lastSpwanX = x;
+        lastSpwanY = y;
     }
     private void removeAnimation()
     {
@@ -67,19 +92,37 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
 
         manager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
         sensor = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        manager.registerListener(GameView.this,sensor,manager.SENSOR_DELAY_GAME);
+        manager.registerListener(GameView.this,sensor,SensorManager.SENSOR_DELAY_FASTEST);//"sensor_delay_game" was too slow, player was lagging
 
-        addAnimation(piratid, 400, 1000);
+        addAnimation(piratid, 863, 1900);
+        addAnimation(platform,825,2200);
+        Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(), platform[0]);
+        int step = sprite.getHeight()/2;
+        int stepsToFitScreen = getHeight()/step;
+        maxSpawnCap = (stepsToFitScreen / 3);
+        //Random random = new Random();
+        for (int i = 0; i < 5; i++)
+        {
+            int nextspace =9;// random.nextInt(13) + 3;
+            addAnimation(platform,(int)lastSpwanX,(int)lastSpwanY - (nextspace * step));
+        }
     }
-    public void draw(Animation a){
+    public void draw(Vector<Animation> animations){
         if (holder.getSurface().isValid()) {
             canvas = holder.lockCanvas();
             bitmap = Bitmap.createBitmap(getWidth(),getHeight(), Bitmap.Config.ARGB_8888);
             if (canvas != null) {
                 canvas.drawColor(Color.GREEN);
                 Paint paint = new Paint();
-                Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(), a.getCurrent());
-                canvas.drawBitmap(sprite, a.getPosx(), a.getPosy() - offset, paint);
+                for (Animation a: animations)
+                {
+                    if (a.getAlive())
+                    {
+                        Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(), a.getCurrent());
+                        canvas.drawBitmap(sprite, a.getPosx(), a.getPosy() + offset, paint);
+                    }
+                }
+
                 holder.unlockCanvasAndPost(canvas);
             }
         }
@@ -115,20 +158,28 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 } else if (nextX < -75) {
                     nextX= getWidth();
                 }
-                //
-                //check colliton here
-                //
-                animations.firstElement().setPos((int) nextX, (int) nextY);
-                dir = 0;// very needed
+                // ckeck land colltion
+                for (int i = 1; i < animations.capacity()-1; i++) //start from 1 to skip player
+                {
+                    if (animations.firstElement().doesLand(animations.get(i), nextX, nextY)) {
+                        velocity = -80;
+                        break;
+                    }
+                }
+                dir = 0;// reset motion controls
+                if ((animations.firstElement().getPosy() + offset < (getHeight()/4)) && velocity < 0)// offset calc
+                {
+                    offset -= velocity;//not sure if this will create problem or not
+                }
             }
-            for (Animation a: animations)
-            {
-                draw(a);
-            }
+            draw(animations);
         }
         Log.d("GameView", "Stopping thread");
     }
-
+    public void gameOver()
+    {
+        //nothing yet
+    }
     public void pause()
     {
         paused = true;
@@ -173,7 +224,8 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 }
                 else
                 {
-                    velocity = -80;
+                    //velocity = -80;
+                    Log.d("GameView", animations.capacity() + "");
                 }
                 Log.d("GameView","x: "+animations.firstElement().getPosx() + " y: " +animations.firstElement().getPosy());
                 break;

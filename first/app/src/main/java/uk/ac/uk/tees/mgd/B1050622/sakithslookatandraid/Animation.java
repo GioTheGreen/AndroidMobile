@@ -31,6 +31,7 @@ public class Animation {
         posy = y;
         sizeX = sx;
         sizeY = sy;
+        e = enemy;
     }
     public int getCurrent()
     {
@@ -53,15 +54,26 @@ public class Animation {
     }
     public int getPosx(){return posx;}
     public int getPosy(){return posy;}
+    public int getPrePosy(){return preposy;}
+    public int getPrePosx(){return preposx;}
+    public boolean getAlive(){return alive;}
     public void kill(){alive = false;}
     public boolean isEnemy(){return e;}
     public boolean doesLand(Animation other, float nextX, float nextY)  //always player calling, other can be platform or enemy
     {
         if ((other.alive) && ((nextX >= other.posx && nextX <= other.posx + other.sizeX) || (nextX +sizeX <= other.posx+ other.sizeX && nextX +sizeX >= other.posx)) && (posy+sizeY < other.posy) && (nextY + sizeY >= other.posy))
         {
-            posy = other.posy - sizeY;
+            setPos((int)nextX,other.posy - sizeY);
+            if (isEnemy())
+            {
+                alive = false;
+            }
             return true;
         }
-        return false;
+        else
+        {
+            setPos((int)nextX,(int)nextY);
+            return false;
+        }
     }
 }
