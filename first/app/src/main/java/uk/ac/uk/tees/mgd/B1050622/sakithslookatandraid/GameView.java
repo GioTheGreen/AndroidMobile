@@ -100,11 +100,11 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         int step = sprite.getHeight()/2;
         int stepsToFitScreen = getHeight()/step;
         maxSpawnCap = (stepsToFitScreen / 3);
-        //Random random = new Random();
+        Random random = new Random();
         for (int i = 0; i < 5; i++)
         {
-            int nextspace =9;// random.nextInt(13) + 3;
-            addAnimation(platform,(int)lastSpwanX,(int)lastSpwanY - (nextspace * step));
+            int nextspace = random.nextInt(24) + 3; //23 is the max player can go reliability, 3 so platforms aren't connected
+            addAnimation(platform,(int)lastSpwanX,((int)lastSpwanY - (nextspace * step)));
         }
     }
     public void draw(Vector<Animation> animations){
@@ -159,11 +159,10 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                     nextX= getWidth();
                 }
                 // ckeck land colltion
-                for (int i = 1; i < animations.capacity()-1; i++) //start from 1 to skip player
+                for (int i = 1; i < animations.size(); i++) //start from 1 to skip player
                 {
-                    if (animations.firstElement().doesLand(animations.get(i), nextX, nextY)) {
+                    if (animations.firstElement().doesLand(animations.elementAt(i), nextX, nextY)) {
                         velocity = -80;
-                        break;
                     }
                 }
                 dir = 0;// reset motion controls
@@ -196,8 +195,6 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         paused = false;
         thread = new Thread(this);
         thread.start();
-        //animations.firstElement().setPos(100, 100);
-        Log.d("GameView", animations.capacity() + "");
     }
 
     @Override
@@ -224,7 +221,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 }
                 else
                 {
-                    //velocity = -80;
+                    velocity = -80;
                     Log.d("GameView", animations.capacity() + "");
                 }
                 Log.d("GameView","x: "+animations.firstElement().getPosx() + " y: " +animations.firstElement().getPosy());
