@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.TextView;
 
 import java.util.Random;
 import java.util.Vector;
@@ -26,6 +27,7 @@ import java.util.Vector;
 public class GameView extends SurfaceView implements Runnable, SensorEventListener {
     private volatile boolean paused = false;
     private boolean playing = false;
+    public int score = 0;
     private boolean fiestLoop = true;
     private long LastFrameTime = 0;
     private final long Delay =250;
@@ -94,7 +96,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         {
             spwanX += sprite.getWidth();
         }
-        int spwanY = (int)lastSpwanY - ((r.nextInt(4) + 3)* step);
+        int spwanY = (int)lastSpwanY - ((r.nextInt(10) + 5)* step);
         animations.addElement( new Animation(spriteSet, spwanX, spwanY, sprite.getWidth(),sprite.getHeight(), type));
         lastSpwanType = true;
         lastSpwanX = spwanX;
@@ -182,6 +184,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             //update game loop
             if (playing)
             {
+                score = offset;
                 if (fiestLoop)// have to be here as during construction and first loop, cant use getWeidth() function
                 {
                     for (int i = 0; i < maxSpawnCap; i++)
@@ -306,6 +309,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 }
                 else
                 {
+                    playing = !playing;
                     //spawn bullet
                 }
                 Log.d("GameView","x: "+animations.firstElement().getPosx() + " y: " +animations.firstElement().getPosy());

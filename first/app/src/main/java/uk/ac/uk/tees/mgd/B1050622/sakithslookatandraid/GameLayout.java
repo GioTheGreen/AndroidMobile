@@ -17,6 +17,7 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
     GameView gameView;
     Dialog pause;
     Dialog settings;
+    Dialog gameOver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +26,6 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
 
         gameView = findViewById(R.id.gameView);
         pause = new Dialog(this);
-        settings = new Dialog(this);
 
 //        gameView.run();
 
@@ -36,11 +36,6 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
 
         button.setOnClickListener(this);
 
-
-
-//        while (playing) {
-//            update();
-//        }
     }
 
     @Override
@@ -65,7 +60,7 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
         int id = view.getId();
         if (id == R.id.pauseB){
             showPause();
-            //gameView.pause();
+            gameView.pause();
             //finish();
         }
 //        finish();
@@ -76,13 +71,22 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
         pause.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         Button unpause;
         Button settings;
-        Button exit;
-        unpause = findViewById(R.id.bReturn);
+        unpause = pause.findViewById(R.id.bReturn);
         unpause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 pause.dismiss();
                 gameView.unPause();
+            }
+        });
+        Button exit;
+        exit = pause.findViewById(R.id.bExit);
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pause.dismiss();
+                gameView.exitGame();
+                finish();
             }
         });
         pause.show();
