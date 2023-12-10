@@ -2,6 +2,7 @@ package uk.ac.uk.tees.mgd.B1050622.sakithslookatandraid;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,8 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
 
     Button button;
     GameView gameView;
+    Dialog pause;
+    Dialog settings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +24,8 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
         setContentView(R.layout.gamelayout);
 
         gameView = findViewById(R.id.gameView);
+        pause = new Dialog(this);
+        settings = new Dialog(this);
 
 //        gameView.run();
 
@@ -59,9 +64,27 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
         // terinate sidplay activity
         int id = view.getId();
         if (id == R.id.pauseB){
-            gameView.pause();
-            finish();
+            showPause();
+            //gameView.pause();
+            //finish();
         }
 //        finish();
+    }
+    public void showPause()
+    {
+        pause.setContentView(R.layout.dialog_pause);
+        pause.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        Button unpause;
+        Button settings;
+        Button exit;
+        unpause = findViewById(R.id.bReturn);
+        unpause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pause.dismiss();
+                gameView.unPause();
+            }
+        });
+        pause.show();
     }
 }

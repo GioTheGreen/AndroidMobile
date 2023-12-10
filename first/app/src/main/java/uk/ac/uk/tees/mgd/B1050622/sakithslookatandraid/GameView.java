@@ -94,7 +94,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         {
             spwanX += sprite.getWidth();
         }
-        int spwanY = (int)lastSpwanY + (r.nextInt(10) + 3);
+        int spwanY = (int)lastSpwanY - ((r.nextInt(4) + 3)* step);
         animations.addElement( new Animation(spriteSet, spwanX, spwanY, sprite.getWidth(),sprite.getHeight(), type));
         lastSpwanType = true;
         lastSpwanX = spwanX;
@@ -111,7 +111,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         {
             Random r = new Random();
             int rand = r.nextInt(100);
-            if ( true)//rand > 20)
+            if ( rand > 20)
             {
                 addAnimation(w);
             }
@@ -135,7 +135,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         manager.registerListener(GameView.this,sensor,SensorManager.SENSOR_DELAY_FASTEST);//"sensor_delay_game" was too slow, player was lagging
 
         Bitmap player = BitmapFactory.decodeResource(getContext().getResources(), piratid[0]); //manually add player
-        animations.addElement( new Animation(piratid, 863, 1900, player.getWidth(),player.getHeight(), 0));
+        animations.addElement( new Animation(piratid, 863, 1800, player.getWidth(),player.getHeight(), 0)); //<<<<<<<<<<<<<<<<<< problem, how to set place since cant get height
 
         Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(), platform[0]); //manually add first platform to be under player
         animations.addElement( new Animation(platform, 800, 2000, sprite.getWidth(),sprite.getHeight(), 0));
@@ -205,7 +205,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 } else if (nextX < -75) {
                     nextX= getWidth();
                 }
-                // enemy 2 update
+                // enemy 2 update (spawn enemy bullet)
 
                 // bullet update
 
@@ -222,11 +222,16 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 {
                     animations.firstElement().setPos((int)nextX,(int)nextY);
                 }
-                // check hit colltion( player vs enemy)
+                //player fall?
+                if ((animations.firstElement().getPosy() + offset > getHeight()) || !animations.firstElement().getAlive())
+                {
+                    gameOver();//have to check after poss update
+                }
+                // check hit colltion( enemy vs player) enemy has to call function
 
                 // check coin colliion(player vs coin)
 
-                //check bullet colltion(player & enemy vs bullet )
+                //check bullet colltion(player & enemy vs bullet ) kill self if hit
 
                 //remove and add platforms
                 for (int i = 1; i < animations.size(); i++) //start from 1 to skip player
@@ -237,6 +242,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                     }
                 }
                 //remove bullets
+
                 dir = 0;// reset motion controls
                 if ((animations.firstElement().getPosy() + offset < (getHeight()/4)) && velocity < 0)// offset calc
                 {
@@ -249,9 +255,17 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     }
     public void gameOver()
     {
-        //nothing yet
+        playing = false;
     }
     public void pause()
+    {
+        playing = false;
+    }
+    public void unPause()
+    {
+        playing = true;
+    }
+    public void exitGame()
     {
         paused = true;
         try {
@@ -262,7 +276,6 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             throw new RuntimeException(e);
         }
     }
-
     public void resume() {
         paused = false;
         thread = new Thread(this);
@@ -293,8 +306,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 }
                 else
                 {
-                    velocity = -80;
-                    Log.d("GameView", animations.capacity() + "");
+                    //spawn bullet
                 }
                 Log.d("GameView","x: "+animations.firstElement().getPosx() + " y: " +animations.firstElement().getPosy());
                 break;

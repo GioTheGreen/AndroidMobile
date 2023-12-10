@@ -13,6 +13,8 @@ import androidx.core.content.res.ResourcesCompat;
 
 public class Animation {
     private int counter = 0;
+    private long lastFireTime = 0;
+    private final long delay = 2000;
     private boolean alive = true;
     private int e = 0;
     private int posx = 0;
@@ -32,6 +34,10 @@ public class Animation {
         sizeX = sx;
         sizeY = sy;
         e = enemy;
+        if (e == 2)
+        {
+            lastFireTime = System.currentTimeMillis();
+        }
     }
     public int getCurrent()
     {
@@ -45,6 +51,16 @@ public class Animation {
             counter = 0;
         }
     };
+    public boolean fire()
+    {
+        long currrentTime = System.currentTimeMillis();
+        if (currrentTime > lastFireTime + delay)
+        {
+            lastFireTime = currrentTime;
+            return true;
+        }
+        return false;
+    }
     public void setPos(int x, int y)
     {
         preposx = getPosx();
@@ -64,15 +80,27 @@ public class Animation {
         if ((other.alive) && ((nextX >= other.posx && nextX <= other.posx + other.sizeX) || (nextX +sizeX <= other.posx+ other.sizeX && nextX +sizeX >= other.posx)) && (posy+sizeY < other.posy) && (nextY + sizeY >= other.posy))
         {
             setPos((int)nextX,other.posy - sizeY);
-            if (isEnemy() != 0)
+            if (other.isEnemy() > 0)
             {
-                alive = false;
+                other.kill();
             }
             return true;
         }
         else
         {
             //setPos((int)nextX,(int)nextY);  <- this, this line right here has coursed me nothing but grief
+            return false;
+        }
+    }
+    public boolean hit(Animation other)
+    {
+        if (true)
+        {
+            other.kill();
+            return true;
+        }
+        else
+        {
             return false;
         }
     }
