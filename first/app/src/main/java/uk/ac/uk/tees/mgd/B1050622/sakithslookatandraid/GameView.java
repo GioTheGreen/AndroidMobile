@@ -13,6 +13,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -25,12 +26,14 @@ import java.util.Vector;
 public class GameView extends SurfaceView implements Runnable, SensorEventListener {
     private volatile boolean paused = false;
     private boolean playing = false;
+    private boolean fiestLoop = true;
     private long LastFrameTime = 0;
-    private final long Delay =100;
+    private final long Delay =250;
     private float lastSpwanX = 0;
     private float lastSpwanY = 0;
     private boolean lastSpwanType = false;
-    private int maxSpawnCap = 1;
+    private int step = 0;
+    private int maxSpawnCap = 20;
     private float dir = 0;//for motion controls
     private final float acceleration = 3;
     private float velocity = -80;
@@ -52,37 +55,74 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             R.drawable.platform1
     };
     private final int[] enemy1 ={
-            R.drawable.platform1
+            R.drawable.demo
     };
     private final int[] enemy2 ={
-            R.drawable.platform1
+            R.drawable.demo
+    };
+    private final int[] eBullet ={
+            R.drawable.demo
+    };
+    private final int[] pBullet ={
+            R.drawable.demo
     };
     private Vector<Animation> animations = new Vector<Animation>(0);
     private Thread thread;
-    private void addAnimation(int[] spriteSet,int x, int y)
+    private void addAnimation(int w)
     {
-        Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(), spriteSet[0]);
-        animations.addElement( new Animation(spriteSet, x, y, sprite.getWidth(),sprite.getHeight(), false));
-        lastSpwanX = x;
-        lastSpwanY = y;
+
+        Random r = new Random();
+        Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(), platform[0]);
+        int spwanX = r.nextInt( w- sprite.getWidth());
+        int spwanY = (int)lastSpwanY - ((r.nextInt(21) + 3)* step);//23 is the max player can go reliability, 3 so platforms aren't connected
+        animations.addElement( new Animation(platform, spwanX, spwanY, sprite.getWidth(),sprite.getHeight(), 0));
+        lastSpwanType = false;
+        lastSpwanX = spwanX;
+        lastSpwanY = spwanY;
     }
-    private void addEnemyAnimation(boolean type, int x, int y )
+    private void addEnemyAnimation(int type, int w)
     {
+        Random r = new Random();
         int[] spriteSet = enemy1;
-        if (type)
+        if (type > 1)
         {
             spriteSet = enemy2;
         }
         Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(), spriteSet[0]);
-        animations.addElement( new Animation(spriteSet, x, y, sprite.getWidth(),sprite.getHeight(), true));
-        lastSpwanX = x;
-        lastSpwanY = y;
-    }
-    private void removeAnimation()
-    {
-        if (animations.capacity() > 1)
+        int spwanX = r.nextInt(w - (sprite.getWidth() * 2));//don't wat spawning right on top of platforms
+        if ((spwanX > lastSpwanX) && (spwanX < lastSpwanX + sprite.getWidth()))
         {
-            animations.remove(1);
+            spwanX += sprite.getWidth();
+        }
+        int spwanY = (int)lastSpwanY + (r.nextInt(10) + 3);
+        animations.addElement( new Animation(spriteSet, spwanX, spwanY, sprite.getWidth(),sprite.getHeight(), type));
+        lastSpwanType = true;
+        lastSpwanX = spwanX;
+        lastSpwanY = spwanY;
+    }
+    private void removeAndAddAnimation(int w)
+    {
+        animations.remove(1);
+        if (lastSpwanType) // last = enemy
+        {
+            addAnimation(w);
+        }
+        else // last = platform
+        {
+            Random r = new Random();
+            int rand = r.nextInt(100);
+            if ( true)//rand > 20)
+            {
+                addAnimation(w);
+            }
+            else if (rand > 5)
+            {
+                addEnemyAnimation(1, w);
+            }
+            else
+            {
+                addEnemyAnimation(2, w);
+            }
         }
     }
     public GameView(Context context, AttributeSet attributeSet) {
@@ -94,18 +134,16 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         sensor = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         manager.registerListener(GameView.this,sensor,SensorManager.SENSOR_DELAY_FASTEST);//"sensor_delay_game" was too slow, player was lagging
 
-        addAnimation(piratid, 863, 1900);
-        addAnimation(platform,825,2200);
-        Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(), platform[0]);
-        int step = sprite.getHeight()/2;
-        int stepsToFitScreen = getHeight()/step;
-        maxSpawnCap = (stepsToFitScreen / 3);
-        Random random = new Random();
-        for (int i = 0; i < 5; i++)
-        {
-            int nextspace = random.nextInt(21) + 3; //23 is the max player can go reliability, 3 so platforms aren't connected
-            addAnimation(platform,(int)lastSpwanX,((int)lastSpwanY - (nextspace * step)));
-        }
+        Bitmap player = BitmapFactory.decodeResource(getContext().getResources(), piratid[0]); //manually add player
+        animations.addElement( new Animation(piratid, 863, 1900, player.getWidth(),player.getHeight(), 0));
+
+        Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(), platform[0]); //manually add first platform to be under player
+        animations.addElement( new Animation(platform, 800, 2000, sprite.getWidth(),sprite.getHeight(), 0));
+        lastSpwanType = false;
+        lastSpwanX = 800;
+        lastSpwanY = 2000;
+
+        step = sprite.getHeight()/2;
     }
     public void draw(Vector<Animation> animations){
         if (holder.getSurface().isValid()) {
@@ -144,6 +182,15 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             //update game loop
             if (playing)
             {
+                if (fiestLoop)// have to be here as during construction and first loop, cant use getWeidth() function
+                {
+                    for (int i = 0; i < maxSpawnCap; i++)
+                    {
+                        addAnimation(getWidth());
+                    }
+                    fiestLoop = false;
+                }
+                //player update
                 if (velocity + acceleration > maxYSpeed) {
                     velocity = maxYSpeed;
                 } else if (velocity + acceleration < -maxYSpeed) {
@@ -158,7 +205,11 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 } else if (nextX < -75) {
                     nextX= getWidth();
                 }
-                // ckeck land colltion
+                // enemy 2 update
+
+                // bullet update
+
+                // ckeck land colltion (player vs platform & enemy)
                 boolean land = false;
                 for (int i = 1; i < animations.size(); i++) //start from 1 to skip player
                 {
@@ -171,6 +222,21 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 {
                     animations.firstElement().setPos((int)nextX,(int)nextY);
                 }
+                // check hit colltion( player vs enemy)
+
+                // check coin colliion(player vs coin)
+
+                //check bullet colltion(player & enemy vs bullet )
+
+                //remove and add platforms
+                for (int i = 1; i < animations.size(); i++) //start from 1 to skip player
+                {
+                    if (animations.elementAt(i).getPosy() + offset > getHeight() + 10)
+                    {
+                        removeAndAddAnimation(getWidth());
+                    }
+                }
+                //remove bullets
                 dir = 0;// reset motion controls
                 if ((animations.firstElement().getPosy() + offset < (getHeight()/4)) && velocity < 0)// offset calc
                 {

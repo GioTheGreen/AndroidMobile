@@ -14,7 +14,7 @@ import androidx.core.content.res.ResourcesCompat;
 public class Animation {
     private int counter = 0;
     private boolean alive = true;
-    private boolean e = false;
+    private int e = 0;
     private int posx = 0;
     private int posy = 0;
     private int preposx = 0;
@@ -24,7 +24,7 @@ public class Animation {
     private int[] spriteIDs={
             R.drawable.demo
     };
-    public Animation(int[] a, int x, int y, int sx, int sy, boolean enemy)
+    public Animation(int[] a, int x, int y, int sx, int sy, int enemy)
     {
         spriteIDs = a;
         posx = x;
@@ -58,13 +58,13 @@ public class Animation {
     public int getPrePosx(){return preposx;}
     public boolean getAlive(){return alive;}
     public void kill(){alive = false;}
-    public boolean isEnemy(){return e;}
+    public int isEnemy(){return e;}
     public boolean doesLand(Animation other, float nextX, float nextY)  //always player calling, other can be platform or enemy
     {
         if ((other.alive) && ((nextX >= other.posx && nextX <= other.posx + other.sizeX) || (nextX +sizeX <= other.posx+ other.sizeX && nextX +sizeX >= other.posx)) && (posy+sizeY < other.posy) && (nextY + sizeY >= other.posy))
         {
             setPos((int)nextX,other.posy - sizeY);
-            if (isEnemy())
+            if (isEnemy() != 0)
             {
                 alive = false;
             }
