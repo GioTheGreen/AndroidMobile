@@ -60,10 +60,10 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             R.drawable.platform1
     };
     private final int[] enemy1 ={
-            R.drawable.demo
+            R.drawable.demo_e1
     };
     private final int[] enemy2 ={
-            R.drawable.demo
+            R.drawable.demo_e2
     };
     private final int[] eBullet ={
             R.drawable.demo_e_bullet
@@ -106,10 +106,19 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             spriteSet = enemy2;
         }
         Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(), spriteSet[0]);
-        int spwanX = r.nextInt(w - (sprite.getWidth() * 2));//don't wat spawning right on top of platforms
-        if ((spwanX > lastSpwanX) && (spwanX < lastSpwanX + sprite.getWidth()))
+        Bitmap platformsprite = BitmapFactory.decodeResource(getContext().getResources(), platform[0]);
+        int spwanX;
+        if (lastSpwanX+ platformsprite.getWidth() > w - sprite.getWidth())//don't want spawning right on top of platforms
         {
-            spwanX += sprite.getWidth();
+            spwanX = r.nextInt((int)lastSpwanX - sprite.getWidth());
+        }
+        else
+        {
+            spwanX = r.nextInt((int) ((int)lastSpwanX-sprite.getWidth() + (w - sprite.getWidth() - (lastSpwanX + platformsprite.getWidth()))));
+            if (spwanX >lastSpwanX - sprite.getWidth())
+            {
+                spwanX += platformsprite.getWidth() + sprite.getWidth();
+            }
         }
         int spwanY = (int)lastSpwanY - ((r.nextInt(10) + 5)* step);
         animations.addElement( new Animation(spriteSet, spwanX, spwanY, sprite.getWidth(),sprite.getHeight(), type));
@@ -128,11 +137,11 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         {
             Random r = new Random();
             int rand = r.nextInt(100);
-            if ( rand > 20)
+            if ( rand > (20 + Math.min((offset/25000),40))) //progressively difficult depending on height not score
             {
                 addAnimation(w);
             }
-            else if (rand > 5)
+            else if (rand > (5 + Math.min((offset/200000),10)))
             {
                 addEnemyAnimation(1, w);
             }
@@ -298,7 +307,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 }
                 removeBullets(bulletIndex);
                 dir = 0;// reset motion controls
-                if ((animations.firstElement().getPosy() + offset < (getHeight()/4)) && velocity < 0)// offset calc
+                if ((animations.firstElement().getPosy() + offset < (getHeight()/3)) && velocity < 0)// offset calc
                 {
                     offset -= velocity;//not sure if this will create problem or not
                     score -= velocity;

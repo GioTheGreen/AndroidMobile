@@ -101,40 +101,8 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
     }
     public void showGameOver()
     {
-//        Intent intent = new Intent(GameOverActivity.class, this);
-//        startActivity(intent);
-
-        gameOver.setContentView(R.layout.dialog_gameover);
-        gameOver.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        gameOver.setCanceledOnTouchOutside(false);
-        gameOver.setCancelable(false);
-        Button TryAgain;
-        TryAgain = gameOver.findViewById(R.id.bTryAgain);
-        TryAgain.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                gameView.exitGame();
-                gameView.resume(GameLayout.this);
-            }
-        });
-        Button mainMenu;
-        mainMenu = gameOver.findViewById(R.id.bMainMenu);
-        mainMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                gameView.exitGame();
-            }
-        });
-        Button quit;
-        quit = gameOver.findViewById(R.id.bQuitGame);
-        quit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                gameOver.dismiss();
-                System.exit(0);
-            }
-        });
-        gameOver.show();
-        gameView.pause();
+        Intent intent = new Intent(this, GameOver.class);
+        intent.putExtra("Score" ,"gameView.score");
+        startActivity(intent);
     }
 }
