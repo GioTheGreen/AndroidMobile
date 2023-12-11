@@ -94,7 +94,7 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
             public void onClick(View view) {
                 pause.dismiss();
                 gameView.exitGame();
-                //finish();
+                finish();
             }
         });
         pause.show();

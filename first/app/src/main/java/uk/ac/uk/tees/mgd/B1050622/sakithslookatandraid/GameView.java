@@ -66,12 +66,17 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             R.drawable.demo
     };
     private final int[] eBullet ={
-            R.drawable.demo
+            R.drawable.demo_e_bullet
     };
     private final int[] pBullet ={
-            R.drawable.demo
+            R.drawable.demo_p_bullet
+    };
+    private final int[] coin ={
+            R.drawable.demo_coin
     };
     private Vector<Animation> animations = new Vector<Animation>(0);
+    private Vector<Animation> bullets = new Vector<Animation>(0);
+    private Vector<Animation> coins = new Vector<Animation>(0);
     private Thread thread;
     private GameLayout gameLayout;
 
@@ -80,8 +85,13 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
 
         Random r = new Random();
         Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(), platform[0]);
+        int bound = 21;
+        if (lastSpwanType)
+        {
+            bound = 7;
+        }
         int spwanX = r.nextInt( w- sprite.getWidth());
-        int spwanY = (int)lastSpwanY - ((r.nextInt(21) + 3)* step);//23 is the max player can go reliability, 3 so platforms aren't connected
+        int spwanY = (int)lastSpwanY - ((r.nextInt(bound) + 3)* step);//23 is the max player can go reliability, 3 so platforms aren't connected
         animations.addElement( new Animation(platform, spwanX, spwanY, sprite.getWidth(),sprite.getHeight(), 0));
         lastSpwanType = false;
         lastSpwanX = spwanX;
@@ -130,6 +140,25 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             {
                 addEnemyAnimation(2, w);
             }
+        }
+    }
+    public void addPlayerBullet(int type,int x, int y)
+    {
+        int[] spriteSet = pBullet;
+        if (type > 0)
+        {
+            spriteSet = eBullet;
+        }
+        Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(), spriteSet[0]);
+        bullets.addElement(new Animation(pBullet,x,y,sprite.getWidth(),sprite.getHeight(), type));
+    }
+    public void removeBullets(Vector<Integer> bToRemove)
+    {
+        int removed = 0;
+        for (int a: bToRemove)  // just in case two or more bullets needs to be removed in the same frame
+        {
+            bullets.remove(a - removed);
+            removed++;  //only works if values passed in ascending order.
         }
     }
     public GameView(Context context, AttributeSet attributeSet) {
@@ -224,9 +253,14 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 boolean land = false;
                 for (int i = 1; i < animations.size(); i++) //start from 1 to skip player
                 {
+                    boolean isEnemy = animations.elementAt(i).isEnemy() != 0;
                     if (animations.firstElement().doesLand(animations.elementAt(i), nextX, nextY)) {
                         velocity = -80;
                         land = true;
+                        if (isEnemy)
+                        {
+                            score += 7500;
+                        }
                     }
                 }
                 if (!land)
@@ -253,7 +287,16 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                     }
                 }
                 //remove bullets
-
+                Vector<Integer> bulletIndex = new Vector<>(0);
+                for (int i = 0; i < bullets.size(); i++)
+                {
+                    //check if out of bounds
+                    if (!bullets.elementAt(i).getAlive())
+                    {
+                        bulletIndex.addElement(i);
+                    }
+                }
+                removeBullets(bulletIndex);
                 dir = 0;// reset motion controls
                 if ((animations.firstElement().getPosy() + offset < (getHeight()/4)) && velocity < 0)// offset calc
                 {

@@ -7,13 +7,13 @@
 
     <ImageView
         android:id="@+id/imageView4"
-        android:layout_width="396dp"
-        android:layout_height="463dp"
+        android:layout_width="610dp"
+        android:layout_height="657dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.136"
+        app:layout_constraintVertical_bias="0.047"
         app:srcCompat="@android:drawable/progress_horizontal" />
 
     <Button
@@ -55,13 +55,13 @@
         android:layout_width="209dp"
         android:layout_height="53dp"
         android:layout_marginStart="4dp"
-        android:layout_marginBottom="28dp"
+        android:layout_marginBottom="24dp"
         android:ems="10"
         android:inputType="text"
         android:text="Name"
         app:layout_constraintBottom_toTopOf="@+id/bTryAgain"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.237"
+        app:layout_constraintHorizontal_bias="0.411"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -78,15 +78,14 @@
         android:id="@+id/txScoreForDeath"
         android:layout_width="352dp"
         android:layout_height="49dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="76dp"
         android:text="0"
         android:textAlignment="center"
         android:textSize="34sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageView4"
         tools:text="999999999999" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
