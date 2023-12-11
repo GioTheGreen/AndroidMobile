@@ -3,6 +3,7 @@ package uk.ac.uk.tees.mgd.B1050622.sakithslookatandraid;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -100,6 +101,9 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
     }
     public void showGameOver()
     {
+//        Intent intent = new Intent(GameOverActivity.class, this);
+//        startActivity(intent);
+
         gameOver.setContentView(R.layout.dialog_gameover);
         gameOver.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         gameOver.setCanceledOnTouchOutside(false);
