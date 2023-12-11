@@ -2,6 +2,7 @@ package uk.ac.uk.tees.mgd.B1050622.sakithslookatandraid;
 
 import static android.content.Context.SENSOR_SERVICE;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +19,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.Random;
@@ -70,6 +73,8 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     };
     private Vector<Animation> animations = new Vector<Animation>(0);
     private Thread thread;
+    private GameLayout gameLayout;
+
     private void addAnimation(int w)
     {
 
@@ -132,6 +137,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         Log.d("gameview", "create");
         holder = getHolder();
 
+
         manager = (SensorManager) context.getSystemService(SENSOR_SERVICE);
         sensor = manager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         manager.registerListener(GameView.this,sensor,SensorManager.SENSOR_DELAY_FASTEST);//"sensor_delay_game" was too slow, player was lagging
@@ -180,17 +186,19 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 {
                     a.next();
                 }
+                gameLayout.setScore(score);
             }
             //update game loop
             if (playing)
             {
-                score = offset;
                 if (fiestLoop)// have to be here as during construction and first loop, cant use getWeidth() function
                 {
                     for (int i = 0; i < maxSpawnCap; i++)
                     {
                         addAnimation(getWidth());
                     }
+                    score = 0;
+                    offset = 0;
                     fiestLoop = false;
                 }
                 //player update
@@ -250,6 +258,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 if ((animations.firstElement().getPosy() + offset < (getHeight()/4)) && velocity < 0)// offset calc
                 {
                     offset -= velocity;//not sure if this will create problem or not
+                    score -= velocity;
                 }
             }
             draw(animations);
@@ -258,7 +267,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     }
     public void gameOver()
     {
-        playing = false;
+        gameLayout.showGameOver();
     }
     public void pause()
     {
@@ -279,7 +288,8 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             throw new RuntimeException(e);
         }
     }
-    public void resume() {
+    public void resume(GameLayout gameLayout) {
+        this.gameLayout = gameLayout;
         paused = false;
         thread = new Thread(this);
         thread.start();
@@ -309,7 +319,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 }
                 else
                 {
-                    playing = !playing;
+                    //playing = !playing;
                     //spawn bullet
                 }
                 Log.d("GameView","x: "+animations.firstElement().getPosx() + " y: " +animations.firstElement().getPosy());

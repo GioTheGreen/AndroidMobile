@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="396dp"
+        android:layout_height="463dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.136"
+        app:srcCompat="@android:drawable/progress_horizontal" />
+
+    <Button
+        android:id="@+id/bTryAgain"
+        android:layout_width="250dp"
+        android:layout_height="100dp"
+        android:text="Try Again"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageView4"
+        app:layout_constraintVertical_bias="0.44" />
+
+    <Button
+        android:id="@+id/bMainMenu"
+        android:layout_width="162dp"
+        android:layout_height="81dp"
+        android:layout_marginTop="16dp"
+        android:text="Main Menu"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bTryAgain" />
+
+    <Button
+        android:id="@+id/bQuitGame"
+        android:layout_width="162dp"
+        android:layout_height="81dp"
+        android:layout_marginTop="16dp"
+        android:text="Quit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bMainMenu" />
+
+    <EditText
+        android:id="@+id/bGetName"
+        android:layout_width="209dp"
+        android:layout_height="53dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="28dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="Name"
+        app:layout_constraintBottom_toTopOf="@+id/bTryAgain"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.237"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/bEnterName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="32dp"
+        android:text="Enter"
+        app:layout_constraintBottom_toTopOf="@+id/bTryAgain"
+        app:layout_constraintStart_toEndOf="@+id/bGetName" />
+
+    <TextView
+        android:id="@+id/txScoreForDeath"
+        android:layout_width="352dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="52dp"
+        android:text="0"
+        android:textAlignment="center"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="999999999999" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

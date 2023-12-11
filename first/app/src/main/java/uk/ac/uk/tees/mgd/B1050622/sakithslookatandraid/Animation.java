@@ -92,11 +92,14 @@ public class Animation {
             return false;
         }
     }
-    public boolean hit(Animation other)
+    public boolean hit(Animation other)//enemy calls on player, player calls on coins, bullets call on everything
     {
-        if (true)
+        if ((other.posx > posx && other.posx < posx+sizeX && other.posy > posy && other.posy < posy+sizeY)||(other.posx + other.posx > posx && other.posx + other.sizeX < posx+sizeX && other.posy > posy && other.posy < posy+sizeY)||(other.posx > posx && other.posx < posx+sizeX && other.posy + other.sizeY > posy && other.posy+ other.posy < posy+sizeY)||(other.posx + other.sizeX > posx && other.posx + other.posx < posx+sizeX && other.posy + other.sizeY > posy && other.posy + other.sizeY < posy+sizeY))
         {
-            other.kill();
+            if (other.isEnemy() != e)
+            {
+                other.kill();
+            }
             return true;
         }
         else

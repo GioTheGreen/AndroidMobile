@@ -18,6 +18,10 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
     Dialog pause;
     Dialog settings;
     Dialog gameOver;
+    TextView textView;
+    void setScore(int i){
+        textView.setText(""+i);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,12 +30,13 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
 
         gameView = findViewById(R.id.gameView);
         pause = new Dialog(this);
+        gameOver = new Dialog(this);
 
 //        gameView.run();
 
         Log.d("GameLayout", "onCreate");
 
-
+        textView = findViewById(R.id.txScore2);
         button = findViewById(R.id.pauseB);
 
         button.setOnClickListener(this);
@@ -47,7 +52,7 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
     @Override
     protected void onResume() {
         super.onResume();
-        gameView.resume();
+        gameView.resume(this);
     }
 //
 //    private void update()
@@ -69,6 +74,8 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
     {
         pause.setContentView(R.layout.dialog_pause);
         pause.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        pause.setCanceledOnTouchOutside(false);
+        pause.setCancelable(false);
         Button unpause;
         Button settings;
         unpause = pause.findViewById(R.id.bReturn);
@@ -86,9 +93,44 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
             public void onClick(View view) {
                 pause.dismiss();
                 gameView.exitGame();
-                finish();
+                //finish();
             }
         });
         pause.show();
+    }
+    public void showGameOver()
+    {
+        gameOver.setContentView(R.layout.dialog_gameover);
+        gameOver.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        gameOver.setCanceledOnTouchOutside(false);
+        gameOver.setCancelable(false);
+        Button TryAgain;
+        TryAgain = gameOver.findViewById(R.id.bTryAgain);
+        TryAgain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gameView.exitGame();
+                gameView.resume(GameLayout.this);
+            }
+        });
+        Button mainMenu;
+        mainMenu = gameOver.findViewById(R.id.bMainMenu);
+        mainMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gameView.exitGame();
+            }
+        });
+        Button quit;
+        quit = gameOver.findViewById(R.id.bQuitGame);
+        quit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gameOver.dismiss();
+                System.exit(0);
+            }
+        });
+        gameOver.show();
+        gameView.pause();
     }
 }
