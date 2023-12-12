@@ -14,7 +14,7 @@ import androidx.core.content.res.ResourcesCompat;
 public class Animation {
     private int counter = 0;
     private long lastFireTime = 0;
-    private final long delay = 2000;
+    private final long delay = 5000;
     private boolean alive = true;
     private int e = 0;
     private int posx = 0;
@@ -51,6 +51,8 @@ public class Animation {
             counter = 0;
         }
     };
+    public int getSizeX(){return sizeX;}
+    public int getSizeY(){return sizeY;}
     public boolean fire()
     {
         long currrentTime = System.currentTimeMillis();
@@ -94,17 +96,18 @@ public class Animation {
     }
     public boolean hit(Animation other)//enemy calls on player, player calls on coins, bullets call on everything
     {
-        if ((other.posx > posx && other.posx < posx+sizeX && other.posy > posy && other.posy < posy+sizeY)||(other.posx + other.posx > posx && other.posx + other.sizeX < posx+sizeX && other.posy > posy && other.posy < posy+sizeY)||(other.posx > posx && other.posx < posx+sizeX && other.posy + other.sizeY > posy && other.posy+ other.posy < posy+sizeY)||(other.posx + other.sizeX > posx && other.posx + other.posx < posx+sizeX && other.posy + other.sizeY > posy && other.posy + other.sizeY < posy+sizeY))
+        if ((other.posx > posx && other.posx < posx+sizeX && other.posy > posy && other.posy < posy+sizeY)
+                ||(other.posx + other.sizeX > posx && other.posx + other.sizeX < posx+sizeX && other.posy > posy && other.posy < posy+sizeY)
+                ||(other.posx > posx && other.posx < posx+sizeX && other.posy + other.sizeY > posy && other.posy+ other.sizeY < posy+sizeY)
+                ||(other.posx + other.sizeX > posx && other.posx + other.sizeX < posx+sizeX && other.posy + other.sizeY > posy && other.posy + other.sizeY < posy+sizeY)
+                ||(other.posx < posx && other.posx + other.sizeX > posx + sizeX && other.posy < posy && other.posy + other.sizeY > posy))
         {
-            if (other.isEnemy() != e)
+            if ((other.isEnemy() ==0) != (e==0))
             {
                 other.kill();
             }
             return true;
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 }
