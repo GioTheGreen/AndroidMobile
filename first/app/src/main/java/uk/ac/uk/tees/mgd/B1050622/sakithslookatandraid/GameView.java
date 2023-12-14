@@ -58,27 +58,48 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     private final Sensor sensor;
 
     private final int[] piratid ={
-            R.drawable.demo,
-            R.drawable.demo,
-            R.drawable.demo
+            R.drawable.p_1,
+            R.drawable.p_2,
+            R.drawable.p_3,
+            R.drawable.p_4
     };
     private final int[] platform ={
             R.drawable.platform1
     };
     private final int[] enemy1 ={
-            R.drawable.demo_e1
+            R.drawable.e1_1,
+            R.drawable.e1_2,
+            R.drawable.e1_3,
+            R.drawable.e1_4
     };
     private final int[] enemy2 ={
-            R.drawable.demo_e2
+            R.drawable.e2_1,
+            R.drawable.e2_2,
+            R.drawable.e2_3,
+            R.drawable.e2_4
     };
     private final int[] eBullet ={
-            R.drawable.demo_e_bullet
+            R.drawable.eb_1,
+            R.drawable.eb_2,
+            R.drawable.eb_3,
+            R.drawable.eb_4
     };
     private final int[] pBullet ={
-            R.drawable.demo_p_bullet
+            R.drawable.pb_1,
+            R.drawable.pb_2,
+            R.drawable.pb_3,
+            R.drawable.pb_4
     };
     private final int[] coin ={
-            R.drawable.demo_coin
+            R.drawable.c_1,
+            R.drawable.c_2,
+            R.drawable.c_3,
+            R.drawable.c_4,
+            R.drawable.c_5,
+            R.drawable.c_6,
+            R.drawable.c_7,
+            R.drawable.c_8,
+            R.drawable.c_9
     };
     private Vector<Animation> animations = new Vector<Animation>(0);
     private Vector<Animation> bullets = new Vector<Animation>(0);
@@ -102,6 +123,26 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         lastSpwanType = false;
         lastSpwanX = spwanX;
         lastSpwanY = spwanY;
+        Bitmap c = BitmapFactory.decodeResource(getContext().getResources(), coin[0]);
+        if (r.nextInt(100) < 15) //15%
+        {
+            // spawn coin
+            int cx;
+            if (lastSpwanX+ sprite.getWidth() > w - c.getWidth())//don't want spawning right on top of platforms
+            {
+                cx = r.nextInt((int)lastSpwanX - c.getWidth());
+            }
+            else
+            {
+                cx = r.nextInt((int) ((int)lastSpwanX-c.getWidth() + (w - c.getWidth() - (lastSpwanX + sprite.getWidth()))));
+                if (cx >lastSpwanX - c.getWidth())
+                {
+                    cx += sprite.getWidth() + c.getWidth();
+                }
+            }
+            coins.addElement(new Animation(coin,cx, (int)lastSpwanY,c.getWidth(),c.getHeight(), 1));
+        }
+
     }
     private void addEnemyAnimation(int type, int w)
     {
@@ -211,11 +252,11 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             canvas = holder.lockCanvas();
             bitmap = Bitmap.createBitmap(getWidth(),getHeight(), Bitmap.Config.ARGB_8888);
             if (canvas != null) {
-                canvas.drawColor(Color.GREEN);
+                canvas.drawColor(Color.argb(255,92, 171, 255));
                 Paint paint = new Paint();
                 for (Animation a: animations)
                 {
-                    if (a.getAlive())
+                    if (a.getAlive() && (a.getPosy() +offset > 0))
                     {
                         Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(), a.getCurrent());
                         canvas.drawBitmap(sprite, a.getPosx(), a.getPosy() + offset, paint);
@@ -229,7 +270,14 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                         canvas.drawBitmap(sprite, b.getPosx(), b.getPosy() + offset, paint);
                     }
                 }
-
+                for (Animation c: coins)
+                {
+                    if(c.getAlive() && (c.getPosy() +offset > 0))
+                    {
+                        Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(), c.getCurrent());
+                        canvas.drawBitmap(sprite, c.getPosx(), c.getPosy() + offset, paint);
+                    }
+                }
                 holder.unlockCanvasAndPost(canvas);
             }
         }
@@ -246,6 +294,14 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 for (Animation a: animations)
                 {
                     a.next();
+                }
+                for (Animation b: bullets)
+                {
+                    b.next();
+                }
+                for (Animation c: coins)
+                {
+                    c.next();
                 }
                 gameLayout.setScore(score);
             }
@@ -340,7 +396,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                         coinIndex.addElement(i);
                     }
                 }
-
+                removeCoins(coinIndex);
                 //check bullet colltion(player & enemy vs bullet ) kill self if hit
                 for (int i = 0; i < bullets.size(); i++)
                 {
@@ -401,7 +457,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     }
     public void gameOver()
     {
-        gameLayout.finish();
+        gameLayout.showGameOver();
     }
     public void pause()
     {

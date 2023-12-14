@@ -12,6 +12,7 @@ public class DisplayAcitivity extends AppCompatActivity implements View.OnClickL
     TextView textView;
     Button button;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

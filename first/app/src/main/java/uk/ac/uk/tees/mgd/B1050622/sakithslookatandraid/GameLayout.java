@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -101,8 +102,9 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
     }
     public void showGameOver()
     {
-        Intent intent = new Intent(this, GameOver.class);
-        intent.putExtra("Score" ,"gameView.score");
-        startActivity(intent);
+        Intent rintent = getIntent();
+        rintent.putExtra("Score",gameView.score + "");
+        setResult(RESULT_OK, rintent);
+        finish();
     }
 }
