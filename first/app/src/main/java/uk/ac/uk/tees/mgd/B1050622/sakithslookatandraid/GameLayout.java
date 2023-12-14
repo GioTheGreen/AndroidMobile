@@ -104,6 +104,7 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
     {
         Intent rintent = getIntent();
         rintent.putExtra("Score",gameView.score + "");
+        rintent.putExtra("Status", true);
         setResult(RESULT_OK, rintent);
         finish();
     }

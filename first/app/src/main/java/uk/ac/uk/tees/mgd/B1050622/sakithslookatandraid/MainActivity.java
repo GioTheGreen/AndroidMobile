@@ -36,6 +36,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         HS = Integer.valueOf(data.getStringExtra("Score"));
                         display.setText("High Score: " + data.getStringExtra("Score"));
                     }
+                    if (data.getBooleanExtra("Status", false))
+                    {
+                        //showOver();
+                    }
                 }
             }
     );
