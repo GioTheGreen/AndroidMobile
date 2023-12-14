@@ -71,38 +71,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mainTextDis"
-        app:srcCompat="@drawable/demo"
-        tools:srcCompat="@drawable/demo" />
-
-    <Button
-        android:id="@+id/bsettingsmain"
-        android:layout_width="215dp"
-        android:layout_height="75dp"
-        android:layout_marginTop="16dp"
-        android:text="Settings"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button2" />
+        app:srcCompat="@drawable/t_1"
+        tools:srcCompat="@drawable/t_1" />
 
     <Button
         android:id="@+id/bQuitMain"
         android:layout_width="215dp"
         android:layout_height="75dp"
         android:layout_marginTop="16dp"
+        android:onClick="onClick"
         android:text="Save and Quit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bsettingsmain" />
+        app:layout_constraintTop_toBottomOf="@+id/button2" />
 
     <ImageView
         android:id="@+id/howToPlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bQuitMain"
-        app:srcCompat="@drawable/demo"
-        tools:srcCompat="@drawable/demo" />
+        app:srcCompat="@drawable/howto"
+        tools:srcCompat="@drawable/howto" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

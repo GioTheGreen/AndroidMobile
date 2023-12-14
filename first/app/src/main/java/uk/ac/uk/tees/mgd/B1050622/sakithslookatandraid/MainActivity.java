@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     EditText editText;
     Button button;
     Button play;
+    Button exit;
     TextView display;
     TextView current;
     int HS = 0;
@@ -59,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         button.setOnClickListener(this);
         play = findViewById(R.id.button2);
         play.setOnClickListener(this);
+        exit = findViewById(R.id.bQuitMain);
+        exit.setOnClickListener(this);
     }
 
     @Override
@@ -89,6 +92,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(this, GameLayout.class);
             activityResultLauncher.launch(intent);
 
+        }
+        else if (id == R.id.bQuitMain){
+            finish();
         }
         Log.d("MainActivity", "after");
     }

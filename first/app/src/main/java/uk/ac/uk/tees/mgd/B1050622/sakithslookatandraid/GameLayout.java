@@ -1,9 +1,12 @@
 package uk.ac.uk.tees.mgd.B1050622.sakithslookatandraid;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -108,5 +111,15 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
         rintent.putExtra("Status", true);
         setResult(RESULT_OK, rintent);
         finish();
+    }
+    public void cannonReady(){
+        Resources res = getResources();
+        Drawable drawable = ResourcesCompat.getDrawable(res, R.drawable.can_1, null);
+        imageView.setImageDrawable(drawable);
+    }
+    public void cannonNotReady(){
+        Resources res = getResources();
+        Drawable drawable = ResourcesCompat.getDrawable(res, R.drawable.can_2, null);
+        imageView.setImageDrawable(drawable);
     }
 }

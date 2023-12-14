@@ -450,6 +450,10 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                     offset -= velocity;//not sure if this will create problem or not
                     score -= velocity;
                 }
+                long cft = System.currentTimeMillis();
+                if (cft > lastFireTime + bCooldown) {
+                    gameLayout.cannonReady();
+                }
             }
             draw(animations);
         }
@@ -514,6 +518,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                     if (CurrentFrameTime > lastFireTime + bCooldown) {
                         lastFireTime = CurrentFrameTime;
                         addBullet(0,(int)event.getX(),getHeight() - offset);
+                        gameLayout.cannonNotReady();
                     }
                 }
                 break;

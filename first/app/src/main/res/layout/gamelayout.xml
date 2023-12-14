@@ -48,7 +48,7 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/demo"
-        tools:srcCompat="@drawable/demo" />
+        app:srcCompat="@drawable/can_1"
+        tools:srcCompat="@drawable/can_1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
