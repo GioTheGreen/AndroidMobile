@@ -256,7 +256,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 Paint paint = new Paint();
                 for (Animation a: animations)
                 {
-                    if (a.getAlive() && (a.getPosy() +offset > 0))
+                    if (a.getAlive() && (a.getPosy() +offset > -a.getSizeY()))
                     {
                         Bitmap sprite = BitmapFactory.decodeResource(getContext().getResources(), a.getCurrent());
                         canvas.drawBitmap(sprite, a.getPosx(), a.getPosy() + offset, paint);

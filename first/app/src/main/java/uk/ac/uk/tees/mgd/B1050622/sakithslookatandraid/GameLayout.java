@@ -4,14 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.lang.reflect.Array;
 
 public class GameLayout extends AppCompatActivity implements View.OnClickListener {
 
@@ -19,8 +17,8 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
     GameView gameView;
     Dialog pause;
     Dialog settings;
-    Dialog gameOver;
     TextView textView;
+    ImageView imageView;
     void setScore(int i){
         textView.setText(""+i);
     }
@@ -32,7 +30,6 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
 
         gameView = findViewById(R.id.gameView);
         pause = new Dialog(this);
-        gameOver = new Dialog(this);
 
 //        gameView.run();
 
@@ -40,7 +37,7 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
 
         textView = findViewById(R.id.txScore2);
         button = findViewById(R.id.pauseB);
-
+        imageView = findViewById(R.id.imageViewCannon);
         button.setOnClickListener(this);
 
     }
@@ -95,6 +92,10 @@ public class GameLayout extends AppCompatActivity implements View.OnClickListene
             public void onClick(View view) {
                 pause.dismiss();
                 gameView.exitGame();
+                Intent rintent = getIntent();
+                rintent.putExtra("Score",0+ "");
+                rintent.putExtra("Status", false);
+                setResult(RESULT_OK, rintent);
                 finish();
             }
         });

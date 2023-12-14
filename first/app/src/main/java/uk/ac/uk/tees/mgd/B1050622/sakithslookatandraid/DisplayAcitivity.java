@@ -22,7 +22,7 @@ public class DisplayAcitivity extends AppCompatActivity implements View.OnClickL
         button = findViewById(R.id.button2);
 
         String name = getIntent().getStringExtra(MainActivity.KEY);
-        textView.setText(name);
+        textView.setText("Hello " +name+"!!!");
 
         button.setOnClickListener(this);
     }

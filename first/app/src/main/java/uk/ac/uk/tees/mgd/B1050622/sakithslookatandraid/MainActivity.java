@@ -7,6 +7,7 @@ import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -24,7 +25,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button button;
     Button play;
     TextView display;
+    TextView current;
     int HS = 0;
+    boolean stat = false;
+    public static final String SHARED_PREF = "sp";
+    public static final String HIGH_SCORE = "highscore";
     ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
@@ -34,12 +39,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Intent data = activityresult.getData();
                     if (Integer.valueOf(data.getStringExtra("Score")) > HS) {
                         HS = Integer.valueOf(data.getStringExtra("Score"));
-                        display.setText("High Score: " + data.getStringExtra("Score"));
+                        display.setText("High Score: " + HS);
                     }
-                    if (data.getBooleanExtra("Status", false))
-                    {
-                        //showOver();
-                    }
+                    current.setText(data.getStringExtra("Score"));
+                    stat = data.getBooleanExtra("Status", false);
+
                 }
             }
     );
@@ -49,11 +53,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         display = findViewById(R.id.mainTextDis);
+        current = findViewById(R.id.mainTextDis2);
         editText = findViewById(R.id.editTextText);
         button = findViewById(R.id.pauseB);
         button.setOnClickListener(this);
         play = findViewById(R.id.button2);
         play.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loadData();
+        display.setText("High Score: "+HS);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        storeData();
     }
 
     @Override
@@ -70,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else if (id == R.id.button2) {
             Intent intent = new Intent(this, GameLayout.class);
             activityResultLauncher.launch(intent);
+
         }
         Log.d("MainActivity", "after");
     }
@@ -77,5 +96,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent = new Intent(this, GameOver.class);
         intent.putExtra("Score" ,"gameView.score");
         startActivity(intent);
+    }
+    public void storeData(){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF,MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(HIGH_SCORE,HS);
+        editor.commit();
+    }
+    public void loadData(){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF,MODE_PRIVATE);
+        HS = sharedPreferences.getInt(HIGH_SCORE, 0);
     }
 }
